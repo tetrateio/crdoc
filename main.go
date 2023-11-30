@@ -82,20 +82,21 @@ func RootCmd() *cobra.Command {
 					fmt.Print("2" + "\n")
 					model, err := pkg.LoadModel(tocOptionValue)
 					if err != nil {
+						fmt.Print("3" + "\n")
 						return err
 					}
+					fmt.Print("4" + "\n")
 					output := filepath.Clean(filepath.Join(outputOptionValue, group, crd.Kind+".md"))
 					builder := pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
 					err = builders[group].Add(crd)
 					if err != nil {
 						return err
 					}
-					fmt.Print("3" + "\n")
+					fmt.Print("5" + "\n")
 					builder.Output()
 					continue
 				}
 				if builders[group] == nil {
-					fmt.Print("4" + "\n")
 					model, err := pkg.LoadModel(tocOptionValue)
 					if err != nil {
 						return err
@@ -103,7 +104,7 @@ func RootCmd() *cobra.Command {
 					output := filepath.Clean(filepath.Join(outputOptionValue, strings.Replace(group, ".", "-", -1)+".md"))
 					builders[group] = pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
 				}
-				fmt.Print("5" + "\n")
+				fmt.Print("6" + "\n")
 				err = builders[group].Add(crd)
 				if err != nil {
 					return err

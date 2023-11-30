@@ -80,10 +80,14 @@ func RootCmd() *cobra.Command {
 					if err != nil {
 						return err
 					}
-					output := filepath.Clean(filepath.Join(outputOptionValue, group, crd.Name+".md"))
+					output := filepath.Clean(filepath.Join(outputOptionValue, strings.Replace(group, ".", "-", -1), crd.Spec.Names.Kind+".md"))
 					fmt.Printf(output + "\n")
 					builder := pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
 					err = builder.Add(crd)
+					if err != nil {
+						return err
+					}
+					err = os.MkdirAll(filepath.Dir(output), os.ModePerm)
 					if err != nil {
 						return err
 					}

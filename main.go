@@ -81,7 +81,7 @@ func RootCmd() *cobra.Command {
 						return err
 					}
 					output := filepath.Clean(filepath.Join(outputOptionValue, group, crd.Kind+".md"))
-					print(output)
+					fmt.Printf(output)
 					builder := pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
 					err = builder.Add(crd)
 					if err != nil {
@@ -98,7 +98,6 @@ func RootCmd() *cobra.Command {
 					output := filepath.Clean(filepath.Join(outputOptionValue, strings.Replace(group, ".", "-", -1)+".md"))
 					builders[group] = pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
 				}
-				fmt.Print("6" + "\n")
 				err = builders[group].Add(crd)
 				if err != nil {
 					return err
@@ -106,7 +105,6 @@ func RootCmd() *cobra.Command {
 			}
 
 			for _, builder := range builders {
-				fmt.Print("Output" + "\n")
 				builder.Output()
 			}
 

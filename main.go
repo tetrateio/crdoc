@@ -106,6 +106,7 @@ func RootCmd() *cobra.Command {
 			}
 
 			for _, builder := range builders {
+				fmt.Print("Output" + "\n")
 				builder.Output()
 			}
 

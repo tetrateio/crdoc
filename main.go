@@ -75,15 +75,13 @@ func RootCmd() *cobra.Command {
 			})
 			for _, crd := range crds {
 				group := crd.Spec.Group
-				fmt.Print(group + "\n")
-				fmt.Print(crd.Kind + "\n")
-				fmt.Print("1" + "\n")
 				if group == "tsb.tetrate.io" {
 					model, err := pkg.LoadModel(tocOptionValue)
 					if err != nil {
 						return err
 					}
 					output := filepath.Clean(filepath.Join(outputOptionValue, group, crd.Kind+".md"))
+					print(output)
 					builder := pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
 					err = builder.Add(crd)
 					if err != nil {

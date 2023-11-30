@@ -88,7 +88,7 @@ func RootCmd() *cobra.Command {
 					fmt.Print("4" + "\n")
 					output := filepath.Clean(filepath.Join(outputOptionValue, group, crd.Kind+".md"))
 					builder := pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
-					err = builders[group].Add(crd)
+					err = builder.Add(crd)
 					if err != nil {
 						return err
 					}

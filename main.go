@@ -7,12 +7,14 @@ import (
 	"embed"
 	"fmt"
 	"os"
+	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	pkg "fybrik.io/crdoc/pkg/builder"
+	pkg "github.com/tetrateio/crdoc/pkg/builder"
 )
 
 const (
@@ -56,27 +58,59 @@ func RootCmd() *cobra.Command {
 			resourcesOptionValue := viper.GetString(resourcesOption)
 			tocOptionValue := viper.GetString(tocOption)
 
-			model, err := pkg.LoadModel(tocOptionValue)
-			if err != nil {
-				return err
-			}
-
-			builder := pkg.NewModelBuilder(model, tocOptionValue != "",
-				templateOptionValue, outputOptionValue, builtinTemplates)
-
 			crds, err := pkg.LoadCRDs(resourcesOptionValue)
 			if err != nil {
 				return err
 			}
 
+			// create dirs if needed
+			err = os.MkdirAll(filepath.Dir(outputOptionValue), os.ModePerm)
+			if err != nil {
+				return err
+			}
+
+			builders := make(map[string]*pkg.ModelBuilder)
+			sort.Slice(crds, func(i, j int) bool {
+				return crds[i].Spec.Group < crds[j].Spec.Group
+			})
 			for _, crd := range crds {
-				err = builder.Add(crd)
+				group := crd.Spec.Group
+				if group == "tsb.tetrate.io" {
+					model, err := pkg.LoadModel(tocOptionValue)
+					if err != nil {
+						return err
+					}
+					output := filepath.Clean(filepath.Join(outputOptionValue, strings.Replace(group, ".", "-", -1), strings.ToLower(crd.Spec.Names.Kind)+".md"))
+					builder := pkg.NewModelBuilder(model, tocOptionValue != "", "type.tmpl", output, builtinTemplates)
+					err = builder.Add(crd)
+					if err != nil {
+						return err
+					}
+					err = os.MkdirAll(filepath.Dir(output), os.ModePerm)
+					if err != nil {
+						return err
+					}
+					builder.Output()
+					continue
+				}
+				if builders[group] == nil {
+					model, err := pkg.LoadModel(tocOptionValue)
+					if err != nil {
+						return err
+					}
+					output := filepath.Clean(filepath.Join(outputOptionValue, strings.Replace(group, ".", "-", -1)+".md"))
+					builders[group] = pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
+				}
+				err = builders[group].Add(crd)
 				if err != nil {
 					return err
 				}
 			}
 
-			err = builder.Output()
+			for _, builder := range builders {
+				builder.Output()
+			}
+
 			if err != nil {
 				return err
 			}

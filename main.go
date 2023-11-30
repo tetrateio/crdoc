@@ -77,7 +77,9 @@ func RootCmd() *cobra.Command {
 				group := crd.Spec.Group
 				fmt.Print(group + "\n")
 				fmt.Print(crd.Kind + "\n")
+				fmt.Print("1" + "\n")
 				if group == "tsb.tetrate.io" {
+					fmt.Print("2" + "\n")
 					model, err := pkg.LoadModel(tocOptionValue)
 					if err != nil {
 						return err
@@ -88,10 +90,12 @@ func RootCmd() *cobra.Command {
 					if err != nil {
 						return err
 					}
+					fmt.Print("3" + "\n")
 					builder.Output()
 					continue
 				}
 				if builders[group] == nil {
+					fmt.Print("4" + "\n")
 					model, err := pkg.LoadModel(tocOptionValue)
 					if err != nil {
 						return err
@@ -99,6 +103,7 @@ func RootCmd() *cobra.Command {
 					output := filepath.Clean(filepath.Join(outputOptionValue, strings.Replace(group, ".", "-", -1)+".md"))
 					builders[group] = pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
 				}
+				fmt.Print("5" + "\n")
 				err = builders[group].Add(crd)
 				if err != nil {
 					return err

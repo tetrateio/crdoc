@@ -80,8 +80,8 @@ func RootCmd() *cobra.Command {
 					if err != nil {
 						return err
 					}
-					output := filepath.Clean(filepath.Join(outputOptionValue, group, crd.Kind+".md"))
-					fmt.Printf(output)
+					output := filepath.Clean(filepath.Join(outputOptionValue, group, crd.Name+".md"))
+					fmt.Printf(output + "\n")
 					builder := pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
 					err = builder.Add(crd)
 					if err != nil {

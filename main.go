@@ -75,6 +75,8 @@ func RootCmd() *cobra.Command {
 			})
 			for _, crd := range crds {
 				group := crd.Spec.Group
+				fmt.Print(group + "\n")
+				fmt.Print(crd.Kind + "\n")
 				if group == "tsb.tetrate.io" {
 					model, err := pkg.LoadModel(tocOptionValue)
 					if err != nil {

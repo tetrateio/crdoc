@@ -1,21 +1,13 @@
 ---
+{{- with index .Groups 0}}{{- $group := . }}
+{{- with index .Kinds 0}}{{- $kind := .}}
+title: {{$kind.Name}}
 description: ""
 ---
 
+# {{$group.Group}}/{{$group.Version}}
 
-{{- range .Groups }}
-{{- $group := . }}
-
-# {{.Group}}/{{.Version}}
-
-Resource Types:
-{{range .Kinds}}
-- [{{.Name}}](#{{ anchorize .Name }})
-{{end}}{{/* range .Kinds */}}
-
-{{range .Kinds}}
-{{$kind := .}}
-### {{.Name}}
+### {{$kind.Name}}
 <sup><sup>
 
 [↩ Parent](#{{ anchorize (printf "%s/%s" $group.Group $group.Version) }})
@@ -98,5 +90,5 @@ Resource Types:
 </table>
 
 {{- end}}{{/* range .Types */}}
-{{- end}}{{/* range .Kinds */}}
-{{- end}}{{/* range .Groups */}}
+{{- end}}{{/* with index .Kinds 0 */}}
+{{- end}}{{/* with index .Groups 0 */}}

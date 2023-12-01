@@ -82,7 +82,7 @@ func RootCmd() *cobra.Command {
 					}
 					output := filepath.Clean(filepath.Join(outputOptionValue, strings.Replace(group, ".", "-", -1), strings.ToLower(crd.Spec.Names.Kind)+".md"))
 					fmt.Printf(output + "\n")
-					builder := pkg.NewModelBuilder(model, tocOptionValue != "", "type.tmpl", output, builtinTemplates)
+					builder := pkg.NewModelBuilder(model, tocOptionValue != "", templateOptionValue, output, builtinTemplates)
 					err = builder.Add(crd)
 					if err != nil {
 						return err

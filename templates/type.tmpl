@@ -1,15 +1,12 @@
+{{- $group := index .Groups 0}}
+{{- $kind := index .Kinds 0}}
 ---
+title: {{$group}}
 description: ""
 ---
 
-
-{{- range .Groups }}
-{{- $group := . }}
-
 # {{.Group}}/{{.Version}}
 
-{{range .Kinds}}
-{{$kind := .}}
 ### {{.Name}}
 <sup><sup>
 
@@ -93,5 +90,3 @@ description: ""
 </table>
 
 {{- end}}{{/* range .Types */}}
-{{- end}}{{/* range .Kinds */}}
-{{- end}}{{/* range .Groups */}}
